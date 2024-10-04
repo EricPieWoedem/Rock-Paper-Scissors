@@ -38,3 +38,11 @@ Call playRound with the human and computer choices.
 After 5 rounds, log the final scores.
 
 Declare the overall winner based on the final scores.
+
+# Adding UI to the Game
+
+Remove logic thats limit play to 5 rounds for now.
+Create 3 buttons, one for each choice(Rock, Paper or Scissors).
+Add an event listener to the button so that it calls the playRound function with the right playerSelection once you click the button.
+Add a div for displaying results and change all console.logs into DOM methods.
+Reactivate the logic to play 5 rounds. Display the running score, and announce a winner of the game once one player reaches 5 points.

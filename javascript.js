@@ -1,78 +1,100 @@
-console.log("Hello, World!");
-
-function getComputerChoice() {
-    let randomNum = Math.random();
-    
-    if (randomNum < 1/3){
-        return "rock";
-    } else if (randomNum < 2/3){
-        return "paper";
-    } else {
-        return "scissors";
-    }
-}
-
-function getHumanChoice() {
-    let userInput = prompt("Enter your choice: rock, paper, or scissors").trim().toLowerCase();
-    if (userInput === "rock" || userInput === "paper" || userInput === "scissors"){
-        return userInput;
-    } else {
-        console.log("Invalid choice, please enter rock, paper, or scissors.");
-        return getHumanChoice(); // Prompt again until a valid choice is made
-    }
-}
-
 let humanScore = 0;
 let computerScore = 0;
+let roundCount = 0;
+const totalRounds = 5;
 
-function playRound(humanChoice, computerChoice) {
-        // console.log(`Human Choice: ${getHumanChoice()}, Computer Choice: ${getComputerChoice()}`);
-    if ((humanChoice === "paper" && computerChoice === "rock") ||
-        (humanChoice === "rock" && computerChoice === "scissors") ||
-        (humanChoice === "scissors" && computerChoice === "paper")) {
-        
-        console.log(`You win! ${humanChoice} beats ${computerChoice}`);
-        humanScore++;
-    } else if (humanChoice === computerChoice) {
-        console.log("It's a draw");
-    } else {
-        console.log(`You lose! ${computerChoice} beats ${humanChoice}`);
-        computerScore++;
-    }
-    console.log(`Scores - Human: ${humanScore}, Computer: ${computerScore}`);
+document.querySelector('#rockBtn').addEventListener('click', () => playRound('rock'));
+document.querySelector('#paperBtn').addEventListener('click', () => playRound('paper'));
+document.querySelector('#scissorsBtn').addEventListener('click', () => playRound('scissors'));
+
+document.querySelector('#resetBtn').addEventListener('click', resetGame);
+
+document.querySelectorAll('.btn').forEach(button => {
+    button.addEventListener('click', () => {
+        // Add the 'clicked' class to the button
+        button.classList.add('clicked');
+
+        // Remove the 'clicked' class after the animation ends
+        setTimeout(() => {
+            button.classList.remove('clicked');
+        }, 300); // Match the duration of the animation
+    });
+});
+
+
+function getComputerChoice() {
+    const choices = ['rock', 'paper', 'scissors'];
+    const randomIndex = Math.floor(Math.random() * choices.length);
+    return choices[randomIndex];
 }
- 
-const humanSelection = getHumanChoice();
-const computerSelection = getComputerChoice();
 
- playRound(humanSelection, computerSelection);
+function playRound(playerSelection) {
+    if (roundCount >= totalRounds) {
+        return;
+    }
 
-function playGame() {
+    const computerSelection = getComputerChoice();
+    let resultMessage = '';
+
+    if ((playerSelection === 'paper' && computerSelection === 'rock') ||
+        (playerSelection === 'rock' && computerSelection === 'scissors') ||
+        (playerSelection === 'scissors' && computerSelection === 'paper')) {
+        humanScore++;
+        resultMessage = `You win! ${playerSelection} beats ${computerSelection}`;
+    } else if (playerSelection === computerSelection) {
+        resultMessage = "It's a draw!";
+    } else {
+        computerScore++;
+        resultMessage = `You lose! ${computerSelection} beats ${playerSelection}`;
+    }
+
+    roundCount++;
+    updateResults(resultMessage);
+    updateScores();
+
+    if (roundCount === totalRounds) {
+        announceWinner();
+    }
+}
+
+function updateResults(message) {
+    const resultsDiv = document.querySelector('#result');
+    resultsDiv.textContent = message;
+}
+
+function updateScores() {
+    const resultsDiv = document.querySelector('#result');
+    resultsDiv.innerHTML += `<p>Scores - You: ${humanScore}, AI: ${computerScore}</p>`;
+}
+
+function announceWinner() {
+    const resultsDiv = document.querySelector('#result');
+    if (humanScore > computerScore) {
+        resultsDiv.innerHTML += `<p>You won the game!</p>`;
+    } else if (humanScore < computerScore) {
+        resultsDiv.innerHTML += `<p>You lost the game!</p>`;
+    } else {
+        resultsDiv.innerHTML += `<p>The game is a draw!</p>`;
+    }
+}
+
+function resetGame() {
     humanScore = 0;
     computerScore = 0;
+    roundCount = 0;
+    updateResults("Pick Rock, Paper, or Scissors to start the game!");
+}
 
-    for (i=0; i<5; i++) {
-        //  humanSelection;
-        //  computerSelection;
-        //  playRound(humanSelection, computerSelection);
-        const humanChoice = getHumanChoice();
-        const computerChoice = getComputerChoice();
-        playRound(humanChoice, computerChoice);
-    }
-
-    if (humanScore > computerScore) {
-         console.log("You won the game!");
-    }
-    else if (humanScore < computerScore ) {
-         console.log("You lost the game!");
+window.addEventListener('scroll', function() {
+    const footer = document.querySelector('.footer');
     
+    // Check if the user has scrolled to the bottom
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+      // Add the 'visible' class to trigger the animation
+      footer.classList.add('visible');
+    } else {
+      // Remove the 'visible' class when the user scrolls up
+      footer.classList.remove('visible');
     }
-    else {
-         console.log("The game is a draw!");
-    }
-
- }
-
-playGame();
-
-
+  });
+  
